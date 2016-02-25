@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_remark" default="compile.module.remark">
+  <dirname property="module.remark.basedir" file="${ant.file.module_remark}"/>
+  
+  <property name="module.jdk.home.remark" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.remark" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.remark" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.remark" value="-encoding UTF-8 -source 8 ${compiler.args}"/>
+  
+  <property name="remark.output.dir" value="${module.remark.basedir}/out/production/remark"/>
+  <property name="remark.testoutput.dir" value="${module.remark.basedir}/out/test/remark"/>
+  
+  <path id="remark.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="remark.module.production.classpath">
+    <path refid="${module.jdk.classpath.remark}"/>
+  </path>
+  
+  <path id="remark.runtime.production.module.classpath">
+    <pathelement location="${remark.output.dir}"/>
+  </path>
+  
+  <path id="remark.module.classpath">
+    <path refid="${module.jdk.classpath.remark}"/>
+    <pathelement location="${remark.output.dir}"/>
+  </path>
+  
+  <path id="remark.runtime.module.classpath">
+    <pathelement location="${remark.testoutput.dir}"/>
+    <pathelement location="${remark.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.remark">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.remark">
+    <patternset refid="excluded.from.module.remark"/>
+  </patternset>
+  
+  <path id="remark.module.sourcepath">
+    <dirset dir="${module.remark.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.remark" depends="compile.module.remark.production,compile.module.remark.tests" description="Compile module remark"/>
+  
+  <target name="compile.module.remark.production" depends="register.custom.compilers" description="Compile module remark; production classes">
+    <mkdir dir="${remark.output.dir}"/>
+    <javac2 destdir="${remark.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.remark}/javac">
+      <compilerarg line="${compiler.args.remark}"/>
+      <bootclasspath refid="remark.module.bootclasspath"/>
+      <classpath refid="remark.module.production.classpath"/>
+      <src refid="remark.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.remark"/>
+    </javac2>
+    
+    <copy todir="${remark.output.dir}">
+      <fileset dir="${module.remark.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.remark.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.remark.tests" depends="register.custom.compilers,compile.module.remark.production" description="compile module remark; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.remark" description="cleanup module">
+    <delete dir="${remark.output.dir}"/>
+    <delete dir="${remark.testoutput.dir}"/>
+  </target>
+</project>
