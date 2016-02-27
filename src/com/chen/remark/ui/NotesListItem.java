@@ -2,6 +2,7 @@ package com.chen.remark.ui;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,7 +33,14 @@ public class NotesListItem extends LinearLayout {
         this.checkbox = (CheckBox)this.findViewById(android.R.id.checkbox);
     }
 
-    public void bind(Context context, Remark data) {
+    public void bind(Context context, Remark data, boolean choiceMode, boolean checked) {
+        if (choiceMode) {
+            this.checkbox.setVisibility(View.VISIBLE);
+            this.checkbox.setChecked(checked);
+        } else {
+            this.checkbox.setVisibility(View.GONE);
+        }
+
         this.remark = data;
         this.setBackgroundResource(R.drawable.list_yellow_middle);
         this.tvTitle.setTextAppearance(context, R.style.TextAppearancePrimaryItem);

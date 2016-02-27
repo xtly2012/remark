@@ -10,12 +10,11 @@ import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import com.chen.remark.R;
-import com.chen.remark.ui.DeleteConfirmMenu;
-import com.chen.remark.ui.NoteEditActivity;
-import com.chen.remark.ui.NotesListActivity;
-import com.chen.remark.ui.NotesListItem;
+import com.chen.remark.model.Remark;
+import com.chen.remark.ui.*;
 
 /**
  * Created by chenfayong on 16/1/17.
@@ -26,17 +25,17 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
 
     private ListView notesListView;
 
-    private Button addNewNoteButton;
+    private NotesListAdapter notesListAdapter;
 
-    private DeleteConfirmMenu deleteConfirmMenu;
+    private Button addNewNoteButton;
 
     private MenuItem menuMove;
 
-    public NotesListListener(Activity activity) {
+    public NotesListListener(Activity activity, NotesListAdapter notesListAdapter) {
         this.notesActivity = activity;
+        this.notesListAdapter = notesListAdapter;
         this.notesListView = (ListView)this.notesActivity.findViewById(R.id.notes_list);
         this.addNewNoteButton = (Button)this.notesActivity.findViewById(R.id.btn_new_note);
-
     }
 
     @Override
@@ -68,7 +67,7 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-
+        this.notesListAdapter.setCheckedItem(position, checked);
     }
 
     @Override
@@ -79,6 +78,9 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
         this.menuMove.setVisible(false);
         menuMove.setOnMenuItemClickListener(this);
         this.addNewNoteButton.setVisibility(View.GONE);
+
+        this.notesListAdapter.setChoiceMode(true);
+        this.notesListView.setLongClickable(false);
 
         View customView = LayoutInflater.from(this.notesActivity).inflate(R.layout.note_list_dropdown_menu, null);
         mode.setCustomView(customView);
@@ -98,7 +100,9 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-
+        this.notesListAdapter.setChoiceMode(false);
+        this.notesListView.setLongClickable(true);
+        this.addNewNoteButton.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -123,6 +127,14 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (view instanceof NotesListItem) {
+            if (this.notesListAdapter.ifInChoiceMode()) {
+                position = position - this.notesListView.getHeaderViewsCount();
+                this.onItemCheckedStateChanged(null, position, id, this.notesListAdapter.ifSelectedItem(position));
+                return;
+            }
+        }
+
         Log.i("android list view item has selected: position = " + position, "ListView");
 
         NotesListItem listItem = (NotesListItem)view;
@@ -138,12 +150,12 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
 //        this.notesActivity.startActivityForResult(intent, 2);
 
 //        打电话
-//        Uri uri = Uri.parse("tel:18651625287");
+//        Uri uri = Uri.parse("tel:12345678911");
 //        Intent intent = new Intent(Intent.ACTION_CALL, uri);
 //        this.notesActivity.startActivity(intent);
 
 
-//        Uri uri = Uri.parse("tel:18651625287");
+//        Uri uri = Uri.parse("tel:12345678911");
 //        Intent intent = new Intent(Intent.ACTION_DIAL, uri);
 //        this.notesActivity.startActivity(intent);
 

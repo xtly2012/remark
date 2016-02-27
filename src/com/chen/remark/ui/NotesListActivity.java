@@ -33,6 +33,10 @@ public class NotesListActivity extends Activity {
 
     public final static int REQUEST_CODE_NEW_NOTE = 103;
 
+    private NotesListAdapter listAdapter;
+
+    private Button mAddNewNote;
+
     /**
      * Called when the activity is first created.
      */
@@ -53,12 +57,12 @@ public class NotesListActivity extends Activity {
         RemarkDAO remarkDAO = new RemarkDAO(this);
         List<Remark> itemList = remarkDAO.findAll();
 
-        NotesListAdapter listAdapter = new NotesListAdapter(this, R.layout.note_item, itemList);
+        this.listAdapter = new NotesListAdapter(this, R.layout.note_item, itemList);
         listView.setAdapter(listAdapter);
 
-        NotesListListener noteNewListener = new NotesListListener(this);
-        Button button = (Button)this.findViewById(R.id.btn_new_note);
-        button.setOnClickListener(noteNewListener);
+        NotesListListener noteNewListener = new NotesListListener(this, listAdapter);
+        this.mAddNewNote = (Button)this.findViewById(R.id.btn_new_note);
+        mAddNewNote.setOnClickListener(noteNewListener);
 
         listView.setOnItemClickListener(noteNewListener);
         listView.setOnItemLongClickListener(noteNewListener);
@@ -100,6 +104,11 @@ public class NotesListActivity extends Activity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public void setAppInfoFromRawRes() {
