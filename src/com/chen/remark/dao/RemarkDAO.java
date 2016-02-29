@@ -6,8 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
-import com.chen.remark.data.NotesProvider;
 import com.chen.remark.data.TableRemark.RemarkColumns;
 import com.chen.remark.model.Remark;
 
@@ -42,7 +40,7 @@ public class RemarkDAO {
         List<Remark> remarkList = new ArrayList<>();
 
         while (cursor.moveToNext()) {
-            Integer remarkId = cursor.getInt(cursor.getColumnIndex(RemarkColumns.REMARK_ID));
+            Long remarkId = cursor.getLong(cursor.getColumnIndex(RemarkColumns.REMARK_ID));
             String remarkTitle = cursor.getString(cursor.getColumnIndex(RemarkColumns.REMARK_CONTENT));
             Long remarkTime = cursor.getLong(cursor.getColumnIndex(RemarkColumns.CREATED_DATE));
 
@@ -57,7 +55,7 @@ public class RemarkDAO {
         return remarkList;
     }
 
-    public Remark findByRemarkId(Integer remarkId) {
+    public Remark findByRemarkId(Long remarkId) {
         Uri uri = ContentUris.withAppendedId(NotesResolver.AUTHORITY_REMARK, remarkId);
         Cursor cursor = this.contentResolver.query(uri, null, null, null, null);
         if (cursor == null) {
@@ -85,5 +83,13 @@ public class RemarkDAO {
         String[] selectionArgs = {remark.getRemarkId().toString()};
 
         return this.contentResolver.update(NotesResolver.AUTHORITY_REMARK, values, where, selectionArgs);
+    }
+
+    public int removeByRemarkId(Long remarkId) {
+        String where = "remark_id = ?";
+        String[] selectionArgs = {remarkId.toString()};
+
+        this.contentResolver.delete(NotesResolver.AUTHORITY_REMARK, where, selectionArgs);
+        return 0;
     }
 }

@@ -8,7 +8,7 @@ import com.chen.remark.data.TableRemark.RemarkColumns;
  */
 public class Remark extends BaseBean {
 
-    private  Integer remarkId = null;
+    private  Long remarkId = null;
 
     private Long createdDate = null;
 
@@ -38,11 +38,11 @@ public class Remark extends BaseBean {
         this.remarkContent = remarkContent;
     }
 
-    public Integer getRemarkId() {
+    public Long getRemarkId() {
         return remarkId;
     }
 
-    public void setRemarkId(Integer remarkId) {
+    public void setRemarkId(Long remarkId) {
         this.remarkId = remarkId;
     }
 

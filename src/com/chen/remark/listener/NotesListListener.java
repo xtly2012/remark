@@ -6,15 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ListView;
+import android.widget.*;
 import com.chen.remark.R;
+import com.chen.remark.dao.RemarkDAO;
 import com.chen.remark.model.Remark;
+import com.chen.remark.tool.DataUtils;
 import com.chen.remark.ui.*;
+
+import java.util.List;
 
 /**
  * Created by chenfayong on 16/1/17.
@@ -30,6 +32,8 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
     private Button addNewNoteButton;
 
     private MenuItem menuMove;
+
+    private ActionMode mActionMode;
 
     public NotesListListener(Activity activity, NotesListAdapter notesListAdapter) {
         this.notesActivity = activity;
@@ -59,6 +63,7 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         if (this.notesListView.startActionMode(this) != null) {
+            this.onItemCheckedStateChanged(null, position, id, true);
             this.notesListView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         }
 
@@ -81,6 +86,7 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
 
         this.notesListAdapter.setChoiceMode(true);
         this.notesListView.setLongClickable(false);
+        this.mActionMode = mode;
 
         View customView = LayoutInflater.from(this.notesActivity).inflate(R.layout.note_list_dropdown_menu, null);
         mode.setCustomView(customView);
@@ -105,17 +111,32 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
         this.addNewNoteButton.setVisibility(View.VISIBLE);
     }
 
+    public void finishActionMode() {
+        this.mActionMode.finish();
+    }
     @Override
     public boolean onMenuItemClick(MenuItem item) {
+        if (notesListAdapter.getSelectedCount() == 0) {
+            Toast.makeText(this.notesActivity, this.notesActivity.getString(R.string.menu_select_none),
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.notesActivity);
         builder.setTitle(this.notesActivity.getString(R.string.alert_title_delete));
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setMessage(this.notesActivity.getString(R.string.alert_message_delete_notes, 2));
+        builder.setMessage(this.notesActivity.getString(R.string.alert_message_delete_notes, this.notesListAdapter.getSelectedCount()));
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                RemarkDAO remarkDAO = new RemarkDAO(notesActivity);
+                List<Long> itemIdList = notesListAdapter.getCheckedItemId();
+                for (Long itemId : itemIdList) {
+                    remarkDAO.removeByRemarkId(itemId);
+                }
 
+                notesListAdapter.removeCheckedPosition();
             }
         });
 
@@ -130,7 +151,7 @@ public class NotesListListener implements View.OnClickListener, AdapterView.OnIt
         if (view instanceof NotesListItem) {
             if (this.notesListAdapter.ifInChoiceMode()) {
                 position = position - this.notesListView.getHeaderViewsCount();
-                this.onItemCheckedStateChanged(null, position, id, this.notesListAdapter.ifSelectedItem(position));
+                this.onItemCheckedStateChanged(null, position, id, !this.notesListAdapter.ifSelectedItem(position));
                 return;
             }
         }

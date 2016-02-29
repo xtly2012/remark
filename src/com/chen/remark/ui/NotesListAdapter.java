@@ -8,9 +8,7 @@ import android.widget.*;
 import com.chen.remark.R;
 import com.chen.remark.model.Remark;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by chenfayong on 16/1/14.
@@ -67,5 +65,58 @@ public class NotesListAdapter extends ArrayAdapter<Remark> {
         }
 
         return this.mSelectedIndex.get(position);
+    }
+
+    public int getSelectedCount() {
+        Collection<Boolean> values = this.mSelectedIndex.values();
+        if (values == null) {
+            return 0;
+        }
+
+        int count = 0;
+        Iterator<Boolean> iter = values.iterator();
+        while (iter.hasNext()) {
+            if (true == iter.next()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public long getItemId(int position) {
+        Remark remark = this.getItem(position);
+        if (remark == null) {
+            return 0;
+        }
+
+        return remark.getRemarkId();
+    }
+
+    public List<Long> getCheckedItemId() {
+        List<Long> itemIdList = new ArrayList<>();
+        Set<Map.Entry<Integer, Boolean>> entrySet = this.mSelectedIndex.entrySet();
+        Iterator<Map.Entry<Integer, Boolean>> entryIter = entrySet.iterator();
+        while (entryIter.hasNext()) {
+            Map.Entry<Integer, Boolean> entry = entryIter.next();
+            if (true == entry.getValue()) {
+                itemIdList.add(this.getItemId(entry.getKey()));
+            }
+        }
+
+        return itemIdList;
+    }
+
+    public void removeCheckedPosition() {
+        Set<Map.Entry<Integer, Boolean>> entrySet = this.mSelectedIndex.entrySet();
+        Iterator<Map.Entry<Integer, Boolean>> entryIter = entrySet.iterator();
+        while (entryIter.hasNext()) {
+            Map.Entry<Integer, Boolean> entry = entryIter.next();
+            if (true == entry.getValue()) {
+                Remark remark = this.getItem(entry.getKey());
+                this.remove(remark);
+            }
+        }
+
     }
 }

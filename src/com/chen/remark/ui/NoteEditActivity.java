@@ -70,7 +70,7 @@ public class NoteEditActivity extends Activity {
                 ResourceParser.REMARK_BG_BLUE, "");
 
         if (TextUtils.equals(Intent.ACTION_VIEW, intent.getAction())) {
-            Integer remarkId = intent.getIntExtra(Intent.EXTRA_UID, 0);
+            Long remarkId = intent.getLongExtra(Intent.EXTRA_UID, 0);
             RemarkDAO remarkDAO = new RemarkDAO(this);
             this.mRemark = remarkDAO.findByRemarkId(remarkId);
         }
@@ -87,12 +87,14 @@ public class NoteEditActivity extends Activity {
     @Override
     public void onBackPressed() {
         String remarkContent = this.mNoteEditor.getText().toString();
-        this.mRemark.setRemarkContent(remarkContent);
-        RemarkDAO remarkDAO = new RemarkDAO(this);
-        if (this.mRemark.getRemarkId() == null) {
-            remarkDAO.saveRemark(this.mRemark);
-        } else {
-            remarkDAO.modifyByRemarkId(this.mRemark);
+        if (!remarkContent.isEmpty()) {
+            this.mRemark.setRemarkContent(remarkContent);
+            RemarkDAO remarkDAO = new RemarkDAO(this);
+            if (this.mRemark.getRemarkId() == null) {
+                remarkDAO.saveRemark(this.mRemark);
+            } else {
+                remarkDAO.modifyByRemarkId(this.mRemark);
+            }
         }
         this.setResult(RESULT_OK);
 
