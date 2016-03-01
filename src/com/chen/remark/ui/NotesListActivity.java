@@ -1,6 +1,7 @@
 package com.chen.remark.ui;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +38,8 @@ public class NotesListActivity extends Activity {
 
     private Button mAddNewNote;
 
+    private String contentQuery;
+
     /**
      * Called when the activity is first created.
      */
@@ -46,6 +49,21 @@ public class NotesListActivity extends Activity {
         setContentView(R.layout.note_list);
 
         this.setAppInfoFromRawRes();
+        this.parseIntent(this.getIntent());
+        this.initResources();
+    }
+
+    private void parseIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            this.contentQuery = intent.getStringExtra(SearchManager.QUERY);
+            Log.i(TAG, "search key is : " +this.contentQuery);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        this.setIntent(intent);
+        this.parseIntent(intent);
         this.initResources();
     }
 
@@ -55,7 +73,7 @@ public class NotesListActivity extends Activity {
         listView.addFooterView(listFooterView, null, false);
 
         RemarkDAO remarkDAO = new RemarkDAO(this);
-        List<Remark> itemList = remarkDAO.findAll();
+        List<Remark> itemList = remarkDAO.findByContent(this.contentQuery);
 
         this.listAdapter = new NotesListAdapter(this, R.layout.note_item, itemList);
         listView.setAdapter(listAdapter);
@@ -66,7 +84,6 @@ public class NotesListActivity extends Activity {
 
         listView.setOnItemClickListener(noteNewListener);
         listView.setOnItemLongClickListener(noteNewListener);
-
     }
 
     @Override

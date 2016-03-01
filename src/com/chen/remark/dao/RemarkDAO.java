@@ -34,8 +34,16 @@ public class RemarkDAO {
 
     }
 
-    public List<Remark> findAll() {
-        Cursor cursor = this.contentResolver.query(NotesResolver.AUTHORITY_REMARK, null, null, null, null);
+    public List<Remark> findByContent(String content) {
+        String selection = null;
+        String[] selectionArgs = null;
+        if (content != null) {
+            selection = " remark_content LIKE '%' || ? || '%' ";
+            selectionArgs = new String[]{content};
+        }
+
+        String orderOrder = " modified_date DESC ";
+        Cursor cursor = this.contentResolver.query(NotesResolver.AUTHORITY_REMARK, null, selection, selectionArgs, orderOrder);
 
         List<Remark> remarkList = new ArrayList<>();
 
