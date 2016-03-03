@@ -5,10 +5,6 @@ package com.chen.remark.data;
  */
 public class TableRemark {
 
-    public static final int TYPE_WIDGET_INVALID = -1;
-    public static final int TYPE_WIDGET_2X = 0;
-    public static final int TYPE_WIDGET_4X = 1;
-
     public interface RemarkColumns {
 
         /**

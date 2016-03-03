@@ -6,17 +6,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.chen.remark.R;
+import com.chen.remark.constants.IntentConstants;
+import com.chen.remark.constants.RemarkConstants;
 import com.chen.remark.dao.RemarkDAO;
-import com.chen.remark.data.TableRemark;
 import com.chen.remark.listener.NoteEditListener;
 import com.chen.remark.model.Remark;
 import com.chen.remark.tool.ResourceParser;
+import com.chen.remark.widget.NoteWidgetProvider_2x;
+import com.chen.remark.widget.NoteWidgetProvider_4x;
 
 /**
  * note new and modify Activity
@@ -24,6 +28,8 @@ import com.chen.remark.tool.ResourceParser;
  * Created by chenfayong on 16/1/17.
  */
 public class NoteEditActivity extends Activity {
+
+    private final static String TAG = "NoteEditActivity";
 
     private Remark mRemark;
 
@@ -66,13 +72,23 @@ public class NoteEditActivity extends Activity {
     }
 
     private boolean initActivityState(Intent intent) {
-        this.mRemark = new Remark(AppWidgetManager.INVALID_APPWIDGET_ID, TableRemark.TYPE_WIDGET_INVALID,
+        this.mRemark = new Remark(AppWidgetManager.INVALID_APPWIDGET_ID, RemarkConstants.WIDGET_TYPE_INVALID,
                 ResourceParser.REMARK_BG_BLUE, "");
 
+        RemarkDAO remarkDAO = new RemarkDAO(this);
         if (TextUtils.equals(Intent.ACTION_VIEW, intent.getAction())) {
-            Long remarkId = intent.getLongExtra(Intent.EXTRA_UID, 0);
-            RemarkDAO remarkDAO = new RemarkDAO(this);
+            long remarkId = intent.getLongExtra(Intent.EXTRA_UID, 0);
             this.mRemark = remarkDAO.findByRemarkId(remarkId);
+        } else if (TextUtils.equals(Intent.ACTION_INSERT_OR_EDIT, intent.getAction())) {
+            long remarkId = intent.getLongExtra(Intent.EXTRA_UID, 0);
+            int widgetId = intent.getIntExtra(IntentConstants.INTENT_EXTRA_WIDGET_ID, 0);
+            int widgetType = intent.getIntExtra(IntentConstants.INTENT_EXTRA_WIDGET_TYPE, 0);
+            if (remarkId > 0) {
+                this.mRemark = remarkDAO.findByRemarkId(remarkId);
+            } else {
+                this.mRemark.setWidgetId(widgetId);
+                this.mRemark.setWidgetType(widgetType);
+            }
         }
 
         return true;
@@ -85,7 +101,12 @@ public class NoteEditActivity extends Activity {
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onPause() {
+        super.onPause();
+        saveRemark();
+    }
+
+    private void saveRemark() {
         String remarkContent = this.mNoteEditor.getText().toString();
         if (!remarkContent.isEmpty()) {
             this.mRemark.setRemarkContent(remarkContent);
@@ -96,8 +117,34 @@ public class NoteEditActivity extends Activity {
                 remarkDAO.modifyByRemarkId(this.mRemark);
             }
         }
-        this.setResult(RESULT_OK);
 
+        updateWidget();
+    }
+
+    private void updateWidget() {
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        if (RemarkConstants.WIDGET_TYPE_2X == this.mRemark.getWidgetType()) {
+            intent.setClass(this, NoteWidgetProvider_2x.class);
+        } else if (RemarkConstants.WIDGET_TYPE_4X == this.mRemark.getWidgetType()) {
+            intent.setClass(this, NoteWidgetProvider_4x.class);
+        } else {
+            Log.e(TAG, "Unsupported widget type");
+            return;
+        }
+
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {
+                this.mRemark.getWidgetId()
+        });
+
+        this.sendBroadcast(intent);
+        this.setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.saveRemark();
+
+        this.setResult(RESULT_OK);
         super.onBackPressed();
     }
 

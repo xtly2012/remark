@@ -12,8 +12,8 @@ import android.view.*;
 import android.widget.Button;
 import android.widget.ListView;
 import com.chen.remark.R;
+import com.chen.remark.constants.RemarkConstants;
 import com.chen.remark.dao.RemarkDAO;
-import com.chen.remark.data.TableRemark;
 import com.chen.remark.listener.NotesListListener;
 import com.chen.remark.model.Remark;
 import com.chen.remark.tool.ResourceParser;
@@ -161,7 +161,7 @@ public class NotesListActivity extends Activity {
                 }
             }
 
-            Remark remark = new Remark(AppWidgetManager.INVALID_APPWIDGET_ID, TableRemark.TYPE_WIDGET_INVALID,
+            Remark remark = new Remark(AppWidgetManager.INVALID_APPWIDGET_ID, RemarkConstants.WIDGET_TYPE_INVALID,
                     ResourceParser.REMARK_BG_BLUE, stringBuilder.toString());
             RemarkDAO remarkDAO = new RemarkDAO(this);
             remarkDAO.saveRemark(remark);

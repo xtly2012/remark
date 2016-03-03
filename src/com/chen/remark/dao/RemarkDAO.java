@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import com.chen.remark.data.TableRemark;
 import com.chen.remark.data.TableRemark.RemarkColumns;
 import com.chen.remark.model.Remark;
 
@@ -64,14 +65,39 @@ public class RemarkDAO {
     }
 
     public Remark findByRemarkId(Long remarkId) {
-        Uri uri = ContentUris.withAppendedId(NotesResolver.AUTHORITY_REMARK, remarkId);
-        Cursor cursor = this.contentResolver.query(uri, null, null, null, null);
+        String selection = RemarkColumns.REMARK_ID +" = ?";
+        String[] selectionArgs = new String[]{remarkId.toString()};
+        Cursor cursor = this.contentResolver.query(NotesResolver.AUTHORITY_REMARK, null, selection, selectionArgs, null);
         if (cursor == null) {
             return null;
         }
 
         Remark remark = null;
         if (cursor.moveToFirst()) {
+            String remarkTitle = cursor.getString(cursor.getColumnIndex(RemarkColumns.REMARK_CONTENT));
+            Long remarkTime = cursor.getLong(cursor.getColumnIndex(RemarkColumns.CREATED_DATE));
+
+            remark = new Remark();
+            remark.setRemarkId(remarkId);
+            remark.setRemarkContent(remarkTitle);
+            remark.setModifiedDate(remarkTime);
+        }
+        cursor.close();
+
+        return remark;
+    }
+
+    public Remark findByWidgetId(Integer widgetId) {
+        String selection = RemarkColumns.WIDGET_ID +" = ?";
+        String[] selectionArgs = new String[]{widgetId.toString()};
+        Cursor cursor = this.contentResolver.query(NotesResolver.AUTHORITY_REMARK, null, selection, selectionArgs, null);
+        if (cursor == null) {
+            return null;
+        }
+
+        Remark remark = null;
+        if (cursor.moveToFirst()) {
+            Long remarkId = cursor.getLong(cursor.getColumnIndex(RemarkColumns.WIDGET_ID));
             String remarkTitle = cursor.getString(cursor.getColumnIndex(RemarkColumns.REMARK_CONTENT));
             Long remarkTime = cursor.getLong(cursor.getColumnIndex(RemarkColumns.CREATED_DATE));
 
@@ -97,7 +123,8 @@ public class RemarkDAO {
         String where = "remark_id = ?";
         String[] selectionArgs = {remarkId.toString()};
 
-        this.contentResolver.delete(NotesResolver.AUTHORITY_REMARK, where, selectionArgs);
-        return 0;
+        return this.contentResolver.delete(NotesResolver.AUTHORITY_REMARK, where, selectionArgs);
     }
+
+
 }

@@ -28,12 +28,9 @@ public class NotesProvider extends ContentProvider {
 
     private static final int URI_REMARK = 1;
 
-    private static final int URI_REMARK_ITEM = 2;
-
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY, "remark", URI_REMARK);
-        uriMatcher.addURI(AUTHORITY, "remark/#", URI_REMARK_ITEM);
     }
 
     public interface NotesResolver {
@@ -49,22 +46,7 @@ public class NotesProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase readDatabase = this.databaseHelper.getReadableDatabase();
-        Cursor cursor = null;
-        switch (uriMatcher.match(uri)) {
-            case URI_REMARK:
-                cursor = readDatabase.query(TABLE.REMARK, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-
-            case URI_REMARK_ITEM:
-                String remarkId = uri.getPathSegments().get(1);
-                cursor = readDatabase.query(TABLE.REMARK, projection, RemarkColumns.REMARK_ID +"=" +remarkId
-                            +parseSelection(selection), selectionArgs, null, null, sortOrder);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown URI " +uri);
-
-        }
+        Cursor cursor = readDatabase.query(TABLE.REMARK, projection, selection, selectionArgs, null, null, sortOrder);
 
         if (cursor != null) {
             cursor.setNotificationUri(this.getContext().getContentResolver(), uri);
@@ -109,9 +91,5 @@ public class NotesProvider extends ContentProvider {
             this.getContext().getContentResolver().notifyChange(uri, null);
         }
         return count;
-    }
-
-    private String parseSelection(String selection) {
-        return (!TextUtils.isEmpty(selection) ? " AND (" +selection +')' : "");
     }
 }

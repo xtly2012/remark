@@ -22,5 +22,10 @@
     <string name="note_link_web">Browse web</string>
     <string name="note_link_email">Send email</string>
     <string name="note_link_other">Open map</string>
+
+    <string name="widget_2x2">Remark 2x2</string>
+    <string name="widget_4x4">Remark 4x4</string>
+    <string name="widget_have_not_content">No associated note found, click to create associated note.</string>
+    <string name="widget_under_visit_mode">Privacy mode, can not see note content</string>
 </resources>
 
