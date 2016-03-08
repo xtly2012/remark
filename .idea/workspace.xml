@@ -25,17 +25,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d4a96f7e-1a81-4a97-8b5e-3a72fee5e020" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/chen/remark/ui/DateTimePicker.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/com/chen/remark/ui/DateTimePickerDialog.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/layout/datetime_picker.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/menu/note_edit.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/chen/remark/ui/NoteEditActivity.java" afterPath="$PROJECT_DIR$/src/com/chen/remark/ui/NoteEditActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/chen/remark/data/NotesDatabaseHelper.java" afterPath="$PROJECT_DIR$/src/com/chen/remark/data/NotesDatabaseHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/chen/remark/model/Remark.java" afterPath="$PROJECT_DIR$/src/com/chen/remark/model/Remark.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/chen/remark/constants/RemarkConstants.java" afterPath="$PROJECT_DIR$/src/com/chen/remark/constants/RemarkConstants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/chen/remark/dao/RemarkDAO.java" afterPath="$PROJECT_DIR$/src/com/chen/remark/dao/RemarkDAO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/chen/remark/data/TableRemark.java" afterPath="$PROJECT_DIR$/src/com/chen/remark/data/TableRemark.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/README" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="remark.iws" />
@@ -93,10 +83,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DateTimePicker.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="DateTimePicker.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/chen/remark/ui/DateTimePicker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.48172757" vertical-offset="3080" max-vertical-offset="6630">
+            <state vertical-scroll-proportion="-5.576923" vertical-offset="3080" max-vertical-offset="6630">
               <caret line="231" column="70" selection-start-line="231" selection-start-column="70" selection-end-line="231" selection-end-column="70" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -105,6 +95,16 @@
                 <element signature="e#6238#6239#0" expanded="true" />
                 <element signature="e#6309#6310#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="363">
+              <caret line="0" column="16" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -136,16 +136,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="885">
               <caret line="33" column="82" selection-start-line="33" selection-start-column="82" selection-end-line="33" selection-end-column="82" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RuntimeInit.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Android/android-sdk-macosx/sources/android-19/com/android/internal/os/RuntimeInit.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="509" max-vertical-offset="5790">
-              <caret line="71" column="0" selection-start-line="71" selection-start-column="0" selection-end-line="71" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -195,7 +185,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/res/drawable/new_note.xml" />
         <option value="$PROJECT_DIR$/res/values/dimens.xml" />
         <option value="$PROJECT_DIR$/res/color/secondary_text_dark.xml" />
         <option value="$PROJECT_DIR$/res/color/primary_text_dark.xml" />
@@ -246,6 +235,7 @@
         <option value="$PROJECT_DIR$/src/com/chen/remark/dao/RemarkDAO.java" />
         <option value="$PROJECT_DIR$/src/com/chen/remark/model/Remark.java" />
         <option value="$PROJECT_DIR$/src/com/chen/remark/ui/DateTimePicker.java" />
+        <option value="$PROJECT_DIR$/README" />
       </list>
     </option>
   </component>
@@ -354,76 +344,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="chen" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remark" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -768,7 +688,7 @@
       <workItem from="1456420639054" duration="27862000" />
       <workItem from="1456636904288" duration="1439000" />
       <workItem from="1456654468535" duration="67632000" />
-      <workItem from="1457257054151" duration="11625000" />
+      <workItem from="1457257054151" duration="11815000" />
     </task>
     <task id="LOCAL-00001" summary="代码修改">
       <created>1456553701354</created>
@@ -786,11 +706,15 @@
       <created>1457016353118</created>
       <updated>1457016353118</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="完成提醒日期功能。">
+      <created>1457428286920</created>
+      <updated>1457428286920</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="324681000" />
+    <option name="totallyTimeSpent" value="324871000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -868,7 +792,8 @@
     <MESSAGE value="完成删除功能" />
     <MESSAGE value="完成搜索功能。" />
     <MESSAGE value="完成添加桌面组件功能。" />
-    <option name="LAST_COMMIT_MESSAGE" value="完成添加桌面组件功能。" />
+    <MESSAGE value="完成提醒日期功能。" />
+    <option name="LAST_COMMIT_MESSAGE" value="完成提醒日期功能。" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -906,13 +831,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/Android/android-sdk-macosx/sources/android-19/android/widget/AdapterView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3010" max-vertical-offset="17205">
-          <caret line="237" column="28" selection-start-line="237" selection-start-column="28" selection-end-line="237" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Android/android-sdk-macosx/sources/android-19/android/view/MenuItem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33163264" vertical-offset="710" max-vertical-offset="8790">
@@ -1328,7 +1246,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/chen/remark/ui/DateTimePicker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48172757" vertical-offset="3080" max-vertical-offset="6630">
+        <state vertical-scroll-proportion="-5.576923" vertical-offset="3080" max-vertical-offset="6630">
           <caret line="231" column="70" selection-start-line="231" selection-start-column="70" selection-end-line="231" selection-end-column="70" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1337,6 +1255,14 @@
             <element signature="e#6238#6239#0" expanded="true" />
             <element signature="e#6309#6310#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="363">
+          <caret line="0" column="16" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
