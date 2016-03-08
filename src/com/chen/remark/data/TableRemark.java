@@ -54,5 +54,10 @@ public class TableRemark {
          * <p>Type:Text</p>
          */
         public static final String REMARK_CONTENT = "remark_content";
+
+        /**
+         * Text write mode
+         */
+        public static final String CHECK_LIST_MODE = "check_list_mode";
     }
 }

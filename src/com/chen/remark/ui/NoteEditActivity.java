@@ -1,12 +1,15 @@
 package com.chen.remark.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,10 +46,14 @@ public class NoteEditActivity extends Activity {
 
     private View mNoteEditorPanel;
 
+    private RemarkDAO mRemarkDAO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.note_edit);
+
+        this.mRemarkDAO = new RemarkDAO(this);
 
         if (savedInstanceState == null && !this.initActivityState(this.getIntent())) {
             this.finish();
@@ -75,16 +82,15 @@ public class NoteEditActivity extends Activity {
         this.mRemark = new Remark(AppWidgetManager.INVALID_APPWIDGET_ID, RemarkConstants.WIDGET_TYPE_INVALID,
                 ResourceParser.REMARK_BG_BLUE, "");
 
-        RemarkDAO remarkDAO = new RemarkDAO(this);
         if (TextUtils.equals(Intent.ACTION_VIEW, intent.getAction())) {
             long remarkId = intent.getLongExtra(Intent.EXTRA_UID, 0);
-            this.mRemark = remarkDAO.findByRemarkId(remarkId);
+            this.mRemark = this.mRemarkDAO.findByRemarkId(remarkId);
         } else if (TextUtils.equals(Intent.ACTION_INSERT_OR_EDIT, intent.getAction())) {
             long remarkId = intent.getLongExtra(Intent.EXTRA_UID, 0);
             int widgetId = intent.getIntExtra(IntentConstants.INTENT_EXTRA_WIDGET_ID, 0);
             int widgetType = intent.getIntExtra(IntentConstants.INTENT_EXTRA_WIDGET_TYPE, 0);
             if (remarkId > 0) {
-                this.mRemark = remarkDAO.findByRemarkId(remarkId);
+                this.mRemark = this.mRemarkDAO.findByRemarkId(remarkId);
             } else {
                 this.mRemark.setWidgetId(widgetId);
                 this.mRemark.setWidgetType(widgetType);
@@ -92,6 +98,72 @@ public class NoteEditActivity extends Activity {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (this.isFinishing()) {
+            return true;
+        }
+
+        menu.clear();
+        this.getMenuInflater().inflate(R.menu.note_edit, menu);
+
+        if (RemarkConstants.MODE_CHECK_LIST == this.mRemark.getCheckListMode()) {
+            menu.findItem(R.id.menu_list_mode).setTitle(R.string.menu_normal_mode);
+        } else {
+            menu.findItem(R.id.menu_list_mode).setTitle(R.string.menu_list_mode);
+        }
+
+        if (this.mRemark.getAlertDate() > 0) {
+            menu.findItem(R.id.menu_alert).setVisible(false);
+        } else {
+            menu.findItem(R.id.menu_delete_remind).setVisible(false);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_font_size:
+                break;
+
+            case R.id.menu_list_mode:
+                break;
+
+            case R.id.menu_share:
+                break;
+
+            case R.id.menu_send_to_desktop:
+                break;
+
+            case R.id.menu_alert:
+                setReminder();
+                break;
+
+            case R.id.menu_delete_remind:
+                this.mRemark.setAlertDate(0L);
+                break;
+
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private void setReminder() {
+        DateTimePickerDialog dialog = new DateTimePickerDialog(this, System.currentTimeMillis());
+        dialog.setOnDateTimeSetListener(new DateTimePickerDialog.OnDateTimeSetListener() {
+            @Override
+            public void onDateTimeSet(AlertDialog dialog, long date) {
+                mRemark.setAlertDate(date);
+                mRemarkDAO.saveRemark(mRemark);
+            }
+        });
+
+        dialog.show();
     }
 
     @Override

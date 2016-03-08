@@ -75,12 +75,16 @@ public class RemarkDAO {
         Remark remark = null;
         if (cursor.moveToFirst()) {
             String remarkTitle = cursor.getString(cursor.getColumnIndex(RemarkColumns.REMARK_CONTENT));
+            Integer checkListMode = cursor.getInt(cursor.getColumnIndex(RemarkColumns.CHECK_LIST_MODE));
             Long remarkTime = cursor.getLong(cursor.getColumnIndex(RemarkColumns.CREATED_DATE));
+            Long alertTime = cursor.getLong(cursor.getColumnIndex(RemarkColumns.ALERTED_DATE));
 
             remark = new Remark();
             remark.setRemarkId(remarkId);
             remark.setRemarkContent(remarkTitle);
             remark.setModifiedDate(remarkTime);
+            remark.setCheckListMode(checkListMode);
+            remark.setAlertDate(alertTime);
         }
         cursor.close();
 

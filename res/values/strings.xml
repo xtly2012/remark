@@ -14,6 +14,15 @@
     <string name="menu_setting">Setting</string>
     <string name="menu_search">Search</string>
     <string name="menu_select_none">Nothing selected, then operation is invalid</string>
+
+    <string name="menu_font_size">Font size</string>
+    <string name="menu_list_mode">Enter check list</string>
+    <string name="menu_normal_mode">Leave check list</string>
+    <string name="menu_share">Share</string>
+    <string name="send_to_desktop">Send to home</string>
+    <string name="menu_alert">Remind me</string>
+    <string name="menu_delete_remind">Delete reminder</string>
+    
     <string name="search_label">Searching Notes</string>
     <string name="search_hint">Search hit</string>
     <string name="search_setting_description">Text in your notes</string>
@@ -27,5 +36,8 @@
     <string name="widget_4x4">Remark 4x4</string>
     <string name="widget_have_not_content">No associated note found, click to create associated note.</string>
     <string name="widget_under_visit_mode">Privacy mode, can not see note content</string>
+
+    <string name="datetime_dialog_ok">set</string>
+    <string name="datetime_dialog_cancel">cancel</string>
 </resources>
 

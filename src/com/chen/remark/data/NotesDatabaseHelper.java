@@ -30,7 +30,8 @@ public class NotesDatabaseHelper extends SQLiteOpenHelper {
                     + RemarkColumns.WIDGET_ID + " INTEGER NOT NULL DEFAULT 0,"
                     + RemarkColumns.WIDGET_TYPE + " INTEGER NOT NULL DEFAULT -1,"
                     + RemarkColumns.BG_COLOR_ID + " INTEGER NOT NULL DEFAULT 0,"
-                    + RemarkColumns.REMARK_CONTENT + " TEXT NOT NULL DEFAULT ''"
+                    + RemarkColumns.REMARK_CONTENT + " TEXT NOT NULL DEFAULT '',"
+                    + RemarkColumns.CHECK_LIST_MODE + " INTEGER NOT NULL DEFAULT 0"
                     + ")";
 
     static synchronized NotesDatabaseHelper getInstance(Context context) {

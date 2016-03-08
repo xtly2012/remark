@@ -1,6 +1,7 @@
 package com.chen.remark.model;
 
 import android.content.ContentValues;
+import com.chen.remark.constants.RemarkConstants;
 import com.chen.remark.data.TableRemark.RemarkColumns;
 
 /**
@@ -24,6 +25,8 @@ public class Remark extends BaseBean {
 
     private String remarkContent = null;
 
+    private Integer checkListMode = null;
+
     public Remark() {
 
     }
@@ -31,11 +34,13 @@ public class Remark extends BaseBean {
     public Remark(Integer widgetId, Integer widgetType, Integer bgColorId, String remarkContent) {
         this.createdDate = System.currentTimeMillis();
         this.modifiedDate = this.createdDate;
-        this.alertDate = this.createdDate;
+        this.alertDate = 0L;
+        this.checkListMode = 0;
         this.widgetId = widgetId;
         this.widgetType = widgetType;
         this.bgColorId = bgColorId;
         this.remarkContent = remarkContent;
+        this.widgetType = RemarkConstants.WIDGET_TYPE_INVALID;
     }
 
     public Long getRemarkId() {
@@ -102,6 +107,13 @@ public class Remark extends BaseBean {
         this.remarkContent = remarkContent;
     }
 
+    public Integer getCheckListMode() {
+        return checkListMode;
+    }
+
+    public void setCheckListMode(Integer checkListMode) {
+        this.checkListMode = checkListMode;
+    }
 
     public ContentValues transform2ContentValues() {
         ContentValues values = new ContentValues();
@@ -113,6 +125,7 @@ public class Remark extends BaseBean {
         this.addContentValue(values, RemarkColumns.WIDGET_TYPE, this.widgetType);
         this.addContentValue(values, RemarkColumns.BG_COLOR_ID, this.bgColorId);
         this.addContentValue(values, RemarkColumns.REMARK_CONTENT, this.remarkContent);
+        this.addContentValue(values, RemarkColumns.CHECK_LIST_MODE, this.checkListMode);
 
         return values;
     }
