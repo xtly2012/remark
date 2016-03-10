@@ -31,8 +31,9 @@ public class RemarkDAO {
 
 
     public void saveRemark(Remark remark) {
-        this.contentResolver.insert(NotesResolver.AUTHORITY_REMARK, remark.transform2ContentValues());
-
+        Uri resultUri = this.contentResolver.insert(NotesResolver.AUTHORITY_REMARK, remark.transform2ContentValues());
+        String insertId = resultUri.getPathSegments().get(1);
+        remark.setRemarkId(Long.valueOf(insertId));
     }
 
     public List<Remark> findByContent(String content) {
