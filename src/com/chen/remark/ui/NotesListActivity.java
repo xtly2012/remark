@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -115,6 +116,15 @@ public class NotesListActivity extends Activity {
             case R.id.menu_search :
                 this.onSearchRequested();
                 break;
+
+            case R.id.menu_export_text :
+                this.exportRemarkToText();
+                break;
+
+            case R.id.menu_setting :
+                this.startPreferenceActivity();
+                break;
+
             default:
                 super.onOptionsItemSelected(item);
                 break;
@@ -167,5 +177,26 @@ public class NotesListActivity extends Activity {
             remarkDAO.saveRemark(remark);
             sharedPrefer.edit().putBoolean(PREFERENCE_ADD_INTRODUCTION, true).commit();
         }
+    }
+
+    private void startPreferenceActivity() {
+        Activity from = this.getParent() != null ? this.getParent() : this;
+        Intent intent = new Intent(from, NotesPreferenceActivity.class);
+        from.startActivityIfNeeded(intent, -1);
+    }
+
+    private void exportRemarkToText() {
+        new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer result) {
+
+            }
+        }.execute();
     }
 }

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/menu_new_folder"
-        android:title="@string/menu_create_folder"/>
 
     <item
         android:id="@+id/menu_export_text"
