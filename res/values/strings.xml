@@ -45,5 +45,8 @@
 
     <string name="file_path">/MIUI/notes</string>
     <string name="file_name_txt_format">notes_%s.txt</string>
+
+    <string name="success_sdcard_export">Export successful</string>
+    <string name="failed_sdcard_export">Export fail</string>
 </resources>
 

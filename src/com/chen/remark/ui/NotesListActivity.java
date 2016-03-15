@@ -1,6 +1,7 @@
 package com.chen.remark.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import com.chen.remark.constants.RemarkConstants;
 import com.chen.remark.dao.RemarkDAO;
 import com.chen.remark.listener.NotesListListener;
 import com.chen.remark.model.Remark;
+import com.chen.remark.tool.BackupUtils;
 import com.chen.remark.tool.ResourceParser;
 
 import java.io.BufferedReader;
@@ -186,16 +188,31 @@ public class NotesListActivity extends Activity {
     }
 
     private void exportRemarkToText() {
+        final BackupUtils backupUtils = new BackupUtils();
         new AsyncTask<Void, Void, Integer>() {
 
             @Override
             protected Integer doInBackground(Void... params) {
-                return null;
+                RemarkDAO remarkDAO = new RemarkDAO(NotesListActivity.this);
+                List<Remark> remarkList = remarkDAO.findByContent(null);
+                return backupUtils.exportToText(NotesListActivity.this, remarkList);
             }
 
             @Override
             protected void onPostExecute(Integer result) {
-
+                if (result == BackupUtils.EXPORT_SUCCESS) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(NotesListActivity.this);
+                    builder.setTitle(NotesListActivity.this.getString(R.string.success_sdcard_export));
+                    builder.setMessage("export success");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(NotesListActivity.this);
+                    builder.setTitle(NotesListActivity.this.getString(R.string.failed_sdcard_export));
+                    builder.setMessage("export failed");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.show();
+                }
             }
         }.execute();
     }

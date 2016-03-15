@@ -1,6 +1,7 @@
 package com.chen.remark.tool;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -15,22 +16,28 @@ import java.util.List;
  */
 public class BackupUtils {
 
+    public static final int EXPORT_SUCCESS = 1;
+
+    public static final int EXPORT_FAILED = 0;
+
     private static final String TAG = "BackupUtils";
 
-    public void exportToText(Context context, List<Remark> remarkList) {
+    public Integer exportToText(Context context, List<Remark> remarkList) {
         if (!externalStorageAvailable()) {
             Log.d(TAG, "Media was not mounted");
-            return;
+            return EXPORT_FAILED;
         }
 
         PrintStream printStream = getExportToTextPrintStream(context);
         if (printStream == null) {
             Log.e(TAG, "get print stream error");
-            return;
+            return EXPORT_FAILED;
         }
 
+        printStream.println(remarkList.toString());
+        printStream.close();
 
-
+        return EXPORT_SUCCESS;
     }
 
     private static boolean externalStorageAvailable() {
