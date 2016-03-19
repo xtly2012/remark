@@ -4,7 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -21,9 +26,13 @@ import com.chen.remark.constants.RemarkConstants;
 import com.chen.remark.dao.RemarkDAO;
 import com.chen.remark.listener.NoteEditListener;
 import com.chen.remark.model.Remark;
+import com.chen.remark.receiver.LocationReceiver;
+import com.chen.remark.service.LocationService;
 import com.chen.remark.tool.ResourceParser;
 import com.chen.remark.widget.NoteWidgetProvider_2x;
 import com.chen.remark.widget.NoteWidgetProvider_4x;
+
+import java.io.File;
 
 /**
  * note new and modify Activity
@@ -48,6 +57,8 @@ public class NoteEditActivity extends Activity {
 
     private RemarkDAO mRemarkDAO;
 
+    private Intent locationIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +72,8 @@ public class NoteEditActivity extends Activity {
         }
 
         this.initResources();
+        this.registerBroadcastReceiver();
+        this.startLocationService();
     }
 
     private void initResources() {
@@ -98,6 +111,13 @@ public class NoteEditActivity extends Activity {
         }
 
         return true;
+    }
+
+    public void appendNoteEditorText(String value) {
+        String text = this.mNoteEditor.getText().toString();
+        text += "\n";
+        text += value;
+        this.mNoteEditor.setText(text);
     }
 
     @Override
@@ -147,10 +167,38 @@ public class NoteEditActivity extends Activity {
                 this.mRemark.setAlertDate(0L);
                 break;
 
+            case R.id.menu_take_picture:
+                this.takePicture();
+                break;
+
             default:
                 break;
         }
         return true;
+    }
+
+    private void takePicture() {
+        // 创建输出文件
+        File file = new File(Environment.getExternalStorageDirectory(),"test.jpg");
+        Uri outputFileUri = Uri.fromFile(file);
+
+        // 生成Intent
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+        // 启动摄像头应用程序
+        this.startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            if (data.hasExtra("data")) {
+                Bitmap thumbnail = data.getParcelableExtra("data");
+                ImageView imageView = new ImageView(this);
+                imageView.setImageBitmap(thumbnail);
+            }
+        }
     }
 
     private void setReminder() {
@@ -176,6 +224,7 @@ public class NoteEditActivity extends Activity {
     protected void onPause() {
         super.onPause();
         saveRemark();
+        stopService(this.locationIntent);
     }
 
     private void saveRemark() {
@@ -219,6 +268,27 @@ public class NoteEditActivity extends Activity {
         this.setResult(RESULT_OK);
         super.onBackPressed();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //停止服务
+        stopService(this.locationIntent);
+    }
+
+    private void registerBroadcastReceiver() {
+        LocationReceiver locationReceiver = new LocationReceiver();
+        locationReceiver.setNoteEditActivity(this);
+        IntentFilter filter = new IntentFilter(LocationReceiver.LOCATION_CHANGED_ACTION);
+        this.registerReceiver(locationReceiver, filter);
+    }
+
+    private void startLocationService() {
+        this.locationIntent = new Intent(this, LocationService.class);
+        this.startService(this.locationIntent);
+    }
+
+
 
     private void initNoteScreen() {
         this.mNoteEditor.setText(this.mRemark.getRemarkContent());

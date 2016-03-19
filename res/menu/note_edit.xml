@@ -20,4 +20,7 @@
     <item android:id="@+id/menu_delete_remind"
           android:title="@string/menu_delete_remind" />
 
+    <item android:id="@+id/menu_take_picture"
+          android:title="@string/menu_tack_picture" />
+
 </menu>

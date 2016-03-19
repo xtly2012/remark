@@ -1,1 +1,210 @@
 1、android 初学入门项目
+
+
+Service定时修改UI
+
+实现的功能：计时器。
+实现的思路：1）后台Service每隔1秒发送广播通知时间已发生变化；
+          2）UI层（Activity）通过BroadcastReceiver接收到广播，更新显示的时间。
+关键技术点：Service的应用、BroadcastReceiver的应用
+说明：1）Activity与通过startService方法启动的Service之间无法直接进行通信，但是借助BroadcastService可以实现两者之间的通信。
+2）实现计时器的方式有很多种，比如通过Thread的sleep等，此处只是演示Service与BroadcastService的组合应用（可以将Service中获取当前时间的操作想象为非常耗时的操作，所以不宜直接在UI层来做）。
+3）此处演示的Service与BroadcastService的组合是“单向通信”即：UI层只是被动接收Service发来的广播，而没有主  动发送广播控制后台Service。下一篇文章将会编写一个实例进行演示“双向通信”。
+第一步：新建一个工程，命名为DynamicUI，Activity命名为DynamicUIActivity。
+修改布局文件main.xml，代码如下：
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent"      android:layout_height="fill_parent" android:background="#FFFFFF">
+	<TextView android:id="@+id/tv" android:layout_width="wrap_content"   android:layout_height="wrap_content" android:text="当前时间: " />
+	<TextView android:id="@+id/time" android:layout_width="fill_parent"          android:layout_height="wrap_content"          android:layout_toRightOf="@id/tv" />
+</RelativeLayout>
+
+DynamicUIActivity类代码如下：
+package com.zyg.demo.service.dynamicui;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.widget.TextView;
+public class DynamicUIActivity extends Activity {
+	public static String TIME_CHANGED_ACTION = "com.zyg.demo.service.dynamicui.action.TIME_CHANGED_ACTION";
+	public static TextView time = null;
+	private Intent timeService = null;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		//初始化UI
+		initUI();
+		System.out.println("initUI");
+		//注册广播-方法1            /*          * 配置          *
+		<receiver android:name=".UITimeReceiver">
+			<intent-filter>
+			<action android:name="com.zyg.demo.service.dynamicui.action.TIME_CHANGED_ACTION"/>
+			</intent-filter>
+		</receiver>          */
+		//注册广播-方法2
+		//注册广播，监听后台Service发送过来的广播
+		//registerBroadcastReceiver();
+		//启动服务，时间改变后发送广播，通知UI层修改时间
+		startTimeService();
+	}
+
+	public TextView getTimeTextView(){          return time;      }
+
+
+
+
+   /**      * 初始化UI      */
+   private void initUI(){
+   		time = (TextView)findViewById(R.id.time);
+   		time.setTextColor(Color.RED);
+   		time.setTextSize(15);
+   	}
+
+   	/**      * 注册广播      */
+   	private void registerBroadcastReceiver(){
+   		UITimeReceiver receiver = new UITimeReceiver();
+   		IntentFilter filter = new IntentFilter(TIME_CHANGED_ACTION);
+   		registerReceiver(receiver, filter);
+   	}
+
+   	/**      * 启动服务      */
+   	private void startTimeService(){
+   		timeService = new Intent(this,TimeService.class);
+   		this.startService(timeService);
+   	}
+
+   	@Override
+   	protected void onDestroy() {
+   		super.onDestroy();
+   		//停止服务
+   		stopService(timeService);
+   	}
+}
+
+第二步：实现自定义BroadcatReceiver类UITimeReceiver，负责接收从后台Service发送过来的广播，获取最新时间数据后更新UI层组件。本类最好作为UI层（Activity）的内部类，此处将其作为外部类实现（通过xml文件配置注册BroadcatReceiver，如果是内部类如何通过xml文件配置目前没找到），有意显示如此做导致代码不够优雅。
+UITimeReceiver代码如下：
+package com.zyg.demo.service.dynamicui;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+/**  * 自定义的UI层BroadcastReceiver，负责监听从后台Service发送过来的广播，根据广播数据更新UI  * @author zhangyg  */
+
+public class UITimeReceiver extends BroadcastReceiver{
+	private DynamicUIActivity dUIActivity = new DynamicUIActivity();
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		String action = intent.getAction();
+		if(DynamicUIActivity.TIME_CHANGED_ACTION.equals(action)){
+			Bundle bundle = intent.getExtras();
+			String strtime = bundle.getString("time");
+			//此处实现不够优雅，为了在UITimeReceiver中使用DynamicUIActivity中的TextView组件time，而将其设置为public类型，
+			//更好的实现是将UITimeReceiver作为DynamicUIActivity的内部类                d
+			UIActivity.time.setText(strtime);
+		}
+	}
+}
+
+第三步：实现自定义Service类TimeService，其代码如下：
+package com.zyg.demo.service.dynamicui;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
+
+public class TimeService extends Service{
+	private String TAG = "TimeService";
+	private Timer timer = null;
+	private SimpleDateFormat sdf = null;
+	private Intent timeIntent = null;
+	private Bundle bundle = null;
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Log.i(TAG,"TimeService->onCreate");
+		//初始化
+		this.init();
+		//定时器发送广播
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				//发送广播
+				sendTimeChangedBroadcast();
+			}          }, 1000,1000);
+	}
+
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		Log.i(TAG,"TimeService->onBind");
+		return null;
+	}
+
+	/**      * 相关变量初始化      */
+	private void init(){
+		timer = new Timer();
+		sdf = new SimpleDateFormat("yyyy年MM月dd日 "+"hh:mm:ss");
+		timeIntent = new Intent();
+		bundle = new Bundle();
+	}
+
+	/**      * 发送广播，通知UI层时间已改变      */
+	private void sendTimeChangedBroadcast(){
+		bundle.putString("time", getTime());
+		timeIntent.putExtras(bundle);
+		timeIntent.setAction(DynamicUIActivity.TIME_CHANGED_ACTION);
+		//发送广播，通知UI层时间改变了
+		sendBroadcast(timeIntent);
+	}
+
+	/**      * 获取最新系统时间      * @return      */
+	private String getTime(){          return sdf.format(new Date());      }
+
+
+	@Override
+	public ComponentName startService(Intent service) {
+		Log.i(TAG,"TimeService->startService");
+		return super.startService(service);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG,"TimeService->onDestroy");
+	}
+}
+
+第四步：修改AndroidManifest.xml文件，代码如下：
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.zyg.demo.service.dynamicui" android:versionCode="1" android:versionName="1.0">
+<uses-sdk android:minSdkVersion="8" />
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".DynamicUIActivity" android:label="@string/app_name">
+            <intent-filter>
+    	        <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".UITimeReceiver">
+            <intent-filter>
+            <action android:name="com.zyg.demo.service.dynamicui.action.TIME_CHANGED_ACTION"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".TimeService"></service>
+    </application>
+</manifest>
+
+

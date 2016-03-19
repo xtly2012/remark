@@ -22,6 +22,7 @@
     <string name="send_to_desktop">Send to home</string>
     <string name="menu_alert">Remind me</string>
     <string name="menu_delete_remind">Delete reminder</string>
+    <string name="menu_tack_picture">Take a picture</string>
     
     <string name="search_label">Searching Notes</string>
     <string name="search_hint">Search hit</string>
